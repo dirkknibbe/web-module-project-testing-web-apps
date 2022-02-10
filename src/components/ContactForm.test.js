@@ -66,8 +66,71 @@ test('renders "email must be a valid email address" if an invalid email is enter
   expect(errorMessage).toBeInTheDocument();
 });
 
-test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {});
+test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
+  const firstNameField = screen.getByLabelText(/first name/i);
+  userEvent.type(firstNameField, "dirkelton");
 
-test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {});
+  const emailField = screen.getByLabelText(/email/i);
+  userEvent.type(emailField, "dirk@dirk.com");
 
-test("renders all fields text when all fields are submitted.", async () => {});
+  const submitBtn = screen.queryByText("Submit");
+  userEvent.click(submitBtn);
+
+  const errorMessages = await screen.getAllByTestId("error");
+  expect(errorMessages).toHaveLength(1);
+});
+
+test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {
+  const firstNameField = screen.getByLabelText(/first name/i);
+  userEvent.type(firstNameField, "dirkelton");
+
+  const lastNameField = screen.getByLabelText(/last name/i);
+  userEvent.type(lastNameField, "knibbe");
+
+  const emailField = screen.getByLabelText(/email/i);
+  userEvent.type(emailField, "dirk@dirk.com");
+
+  const submitBtn = screen.queryByText("Submit");
+  userEvent.click(submitBtn);
+
+  await waitFor(() => {
+    const firstNameDisplay = screen.queryByText("dirkelton");
+    const lastNameDisplay = screen.queryByText("knibbe");
+    const emailDisplay = screen.queryByText("dirk@dirk.com");
+    const messageDisplay = screen.queryByTestId("messageDisplay");
+
+    expect(firstNameDisplay).toBeInTheDocument();
+    expect(lastNameDisplay).toBeInTheDocument();
+    expect(emailDisplay).toBeInTheDocument();
+    expect(messageDisplay).not.toBeInTheDocument();
+  });
+});
+
+test("renders all fields text when all fields are submitted.", async () => {
+  const firstNameField = screen.getByLabelText(/first name/i);
+  userEvent.type(firstNameField, "dirkelton");
+
+  const lastNameField = screen.getByLabelText(/last name/i);
+  userEvent.type(lastNameField, "knibbe");
+
+  const emailField = screen.getByLabelText(/email/i);
+  userEvent.type(emailField, "dirk@dirk.com");
+
+  const messageField = screen.getByLabelText(/message/i);
+  userEvent.type(messageField, "hellow out there");
+
+  const submitBtn = screen.queryByText("Submit");
+  userEvent.click(submitBtn);
+
+  await waitFor(() => {
+    const firstNameDisplay = screen.queryByText("dirkelton");
+    const lastNameDisplay = screen.queryByText("knibbe");
+    const emailDisplay = screen.queryByText("dirk@dirk.com");
+    const messageDisplay = screen.queryByText("hellow out there");
+
+    expect(firstNameDisplay).toBeInTheDocument();
+    expect(lastNameDisplay).toBeInTheDocument();
+    expect(emailDisplay).toBeInTheDocument();
+    expect(messageDisplay).toBeInTheDocument();
+  });
+});
